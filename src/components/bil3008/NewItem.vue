@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{form}}
     <v-layout justify-center>
       <v-flex xs12 sm10 md8 lg6>
         <v-card ref="form" class="input-card">
@@ -108,7 +107,6 @@ export default {
     submit() {
       if (!this.formHasError) {
         const ref = `images/${this.imgFile.name}`;
-        const storageUrl = '';
         const storageRef = storage.ref();
         const imgRef = storageRef.child(ref);
 
@@ -119,7 +117,7 @@ export default {
               imgUrl: url, // datastore linki gelecek buraya
               itemCost: this.form.itemCost,
               itemName: this.form.itemName,
-            }).then(this.goBack()).catch((err) => {
+            }).then(this.$router.push({ path: '/bil3008' })).catch((err) => {
               console.error('err: ', err);
             });
           });

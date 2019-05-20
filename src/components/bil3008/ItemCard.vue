@@ -3,7 +3,6 @@
     <v-card
       color="grey lighten-4"
       slot-scope="{hover}"
-      :to="{name:'view-item',params:{item_id:item.id}}"
     >
       <v-img :aspect-ratio="16/9" :src="item.imgUrl">
         <v-expand-transition>

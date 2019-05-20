@@ -1,8 +1,7 @@
 <template>
   <!-- child to parent için bak https://forum.vuejs.org/t/passing-data-back-to-parent/1201/2 -->
   <div>
-    {{this.item}}
-    <v-layout justify-center>
+    <v-layout justify-center style="margin-top:8px;">
       <v-flex xs12 sm10 md8 lg6>
         <v-card ref="form" class="input-card">
           <v-card-text>
@@ -29,10 +28,10 @@
             <v-btn flat>Cancel</v-btn>
             <v-spacer/>
             <v-slide-x-reverse-transition>
-              <v-tooltip v-if="formHasError" left>
+              <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon class="my-0" @click="resetForm" v-on="on">
-                    <v-icon>refresh</v-icon>
+                  <v-btn icon class="my-0" @click="removeItem" v-on="on" color="red">
+                    <v-icon color="white">delete</v-icon>
                   </v-btn>
                 </template>
                 <span>Refresh form</span>
@@ -108,10 +107,23 @@ export default {
       this.newImg = true;
       console.log(this.imgFile);
     },
+    removeItem() {
+      db.collection('items').doc(this.$route.params.item_id).delete().then(() => {
+        const fileRef = storage.refFromURL(this.item.imgUrl);
+        fileRef.delete().then(() => {
+          console.log('Document successfully deleted!');
+        }).catch((error) => {
+          console.error('Error removing file: ', error);
+        });
+      })
+        .then(this.$router.push({ path: '/bil3008' }))
+        .catch((error) => {
+          console.error('Error removing document: ', error);
+        });
+    },
     submit() {
       if (this.newImg) {
         const ref = `images/${this.imgFile.name}`;
-        const storageUrl = '';
         const storageRef = storage.ref();
         const imgRef = storageRef.child(ref);
         imgRef.put(this.imgFile).then((snapshot) => {
@@ -120,8 +132,8 @@ export default {
             db.collection('items').doc(this.$route.params.item_id).set({
 
               imgUrl: url, // datastore linki gelecek buraya
-              itemCost: this.form.itemCost || item.itemCost,
-              itemName: this.form.itemName || item.itemName,
+              itemCost: this.form.itemCost,
+              itemName: this.form.itemName,
             }).then(this.goBack())
               .catch((err) => {
                 console.error('err: ', err);
@@ -132,7 +144,7 @@ export default {
         db.collection('items').doc(this.$route.params.item_id).set({
           itemCost: this.form.itemCost || this.item.itemCost,
           itemName: this.form.itemName || this.item.itemName,
-          imgUrl: this.item.imgUrl
+          imgUrl: this.item.imgUrl,
         }).then(this.goBack())
           .catch((err) => {
             console.error('err: ', err);
