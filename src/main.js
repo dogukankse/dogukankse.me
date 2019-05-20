@@ -12,7 +12,7 @@ import router from './router';
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 library.add(faGithub, faLinkedin, faTwitter);
 
-Vue.config.productionTip = false;
+// Vue.config.productionTip = false;
 Vue.use(Vuetify);
 
 new Vue({

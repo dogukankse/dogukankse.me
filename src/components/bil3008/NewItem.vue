@@ -1,33 +1,33 @@
 <template>
   <div>
+    {{form}}
     <v-layout justify-center>
       <v-flex xs12 sm10 md8 lg6>
         <v-card ref="form" class="input-card">
-          <InputImage/>
-          <!-- child to parent için bak https://forum.vuejs.org/t/passing-data-back-to-parent/1201/2 -->
           <v-card-text>
+            <InputImage v-on:childToParent="onChildClick"/>
             <v-text-field
               ref="itemName"
-              v-model="itemName"
+              v-model="form.itemName"
               :rules="nameRules"
               :counter="nameCounter"
               label="Item Name"
               required
-            ></v-text-field>
+            />
             <v-text-field
               ref="itemCost"
-              v-model="itemCost"
+              v-model="form.itemCost"
               :rules="costRules"
               label="Item Cost"
               required
-            ></v-text-field>
+            />
           </v-card-text>
-          <v-divider class="mt-1"></v-divider>
+          <v-divider class="mt-1"/>
           <v-card-actions>
-            <v-btn flat>Cancel</v-btn>
-            <v-spacer></v-spacer>
+            <v-btn @click="goBack" flat>Cancel</v-btn>
+            <v-spacer/>
             <v-slide-x-reverse-transition>
-              <v-tooltip v-if="formHasErrors" left>
+              <v-tooltip v-if="formHasError" left>
                 <template v-slot:activator="{ on }">
                   <v-btn icon class="my-0" @click="resetForm" v-on="on">
                     <v-icon>refresh</v-icon>
@@ -44,7 +44,9 @@
   </div>
 </template>
 
+
 <script>
+import { db, storage } from '@/middleware/firebaseInit';
 import InputImage from './InputImage.vue';
 
 export default {
@@ -52,42 +54,30 @@ export default {
   components: {
     InputImage,
   },
-  computed: {
-    form() {
-      return {
-        itemCost: this.itemCost,
-        itemName: this.itemName,
-      };
-    },
-  },
-  methods: {
-    resetForm() {
-      this.errorMessages = [];
-      this.formHasErrors = false;
-      Object.keys(this.form).forEach((f) => {
-        this.$refs[f].reset();
-      });
-    },
-  },
   data() {
     return {
+      item: null,
+      formHasError: false,
       nameCounter: 20,
-      formHasErrors: false,
+      v: null,
+      itemName: null,
+      itemCost: null,
+      imgFile: null,
       nameRules: [
         (v) => {
           if (v == null) {
-            this.formHasErrors = true;
+            this.formHasError = true;
             return 'Name is required';
           }
-          this.formHasErrors = false;
+          this.formHasError = false;
           return false;
         },
         (v) => {
-          if (v.length >= this.nameCounter) {
-            this.formHasErrors = true;
-            return `Name must be less than ${this.nameCounter} characters`;
+          if (v != null && v.length >= this.nameCounter) {
+            this.formHasError = true;
+            return `Name must be less than ${this.nameCounter}`;
           }
-          this.formHasErrors = false;
+          this.formHasError = false;
           return false;
         },
       ],
@@ -97,11 +87,52 @@ export default {
       ],
     };
   },
+  computed: {
+    form() {
+      return {
+        itemCost: this.itemCost,
+        itemName: this.itemName,
+        imgFile: this.imgFile,
+      };
+    },
+  },
+  methods: {
+    goBack() {
+      console.log('geri');
+      this.$router.push('/bil3008');
+    },
+    onChildClick(value) {
+      this.imgFile = value;
+      console.log(this.imgFile);
+    },
+    submit() {
+      if (!this.formHasError) {
+        const ref = `images/${this.imgFile.name}`;
+        const storageUrl = '';
+        const storageRef = storage.ref();
+        const imgRef = storageRef.child(ref);
+
+        imgRef.put(this.imgFile).then((snapshot) => {
+          console.log('snapshot ', snapshot);
+          storage.ref(ref).getDownloadURL().then((url) => {
+            db.collection('items').add({
+              imgUrl: url, // datastore linki gelecek buraya
+              itemCost: this.form.itemCost,
+              itemName: this.form.itemName,
+            }).then(this.goBack()).catch((err) => {
+              console.error('err: ', err);
+            });
+          });
+        });
+      }
+    },
+    resetForm() {
+      this.formHasError = false;
+      Object.keys(this.form).forEach((f) => {
+        this.$refs[f].reset();
+      });
+    },
+  },
+
 };
 </script>
-
-<style scoped>
-.input-card {
-  margin-top: 16px;
-}
-</style>

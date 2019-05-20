@@ -3,15 +3,13 @@
     <v-container fluid>
       <v-layout>
         <v-flex>
-          <v-cardflat>
-            <v-container fluid grid-list-md>
-              <v-layout row wrap>
-                <v-flex xs12 md6 lg3 v-for="item in items" :key="item.id">
-                  <ItemCard :item="item"/>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-cardflat>
+          <v-container fluid grid-list-md>
+            <v-layout row wrap>
+              <v-flex xs12 md6 lg3 v-for="item in items" :key="item.id">
+                <ItemCard :item="item"/>
+              </v-flex>
+            </v-layout>
+          </v-container>
         </v-flex>
       </v-layout>
     </v-container>
@@ -29,7 +27,7 @@
 </template>
 
 <script>
-import db from '@/middleware/firebaseInit';
+import { db } from '@/middleware/firebaseInit';
 import ItemCard from './ItemCard.vue';
 
 export default {

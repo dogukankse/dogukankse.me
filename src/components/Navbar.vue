@@ -7,7 +7,7 @@
       </v-toolbar-items>
       <v-spacer></v-spacer>
 
-      <v-menu :nudge-width="100">
+      <v-menu :nudge-width="100" data-app>
         <template v-slot:activator="{ on }">
           <v-btn flat v-on="on">
             <span>Projects</span>

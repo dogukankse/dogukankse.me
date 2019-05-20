@@ -4,9 +4,9 @@ import BlogHome from './components/blog/BlogHome.vue';
 import BlogPost from './components/blog/BlogPost.vue';
 import Homepage from './components/Homepage.vue';
 import Dashboard from './components/bil3008/Dashboard.vue';
-import NewItem from './components/bil3008/NewItem.vue';
 import EditItem from './components/bil3008/EditItem.vue';
 import ViewItem from './components/bil3008/ViewItem.vue';
+import NewItem from './components/bil3008/NewItem.vue';
 
 Vue.use(Router);
 
@@ -18,6 +18,7 @@ export default new Router({
       name: 'homepage',
       component: Homepage,
     },
+
     {
       path: '/blog',
       name: 'blog-home',

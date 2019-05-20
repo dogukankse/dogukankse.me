@@ -1,29 +1,9 @@
 # dogukankse.me
 
-## Project setup
-```
-npm install
-```
+Personal website repo.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Made with Firebase, Vue.js and ButterCMS.
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## dogukankse.me/bil3008/
 
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+CRUD webpage project for WEB BASED PROGRAMMING lecture.
